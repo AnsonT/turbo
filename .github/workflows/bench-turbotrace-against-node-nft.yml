@@ -2,7 +2,7 @@ name: Bench Turbo trace against @vercel/nft
 
 on:
   push:
-    branches: [main, staging]
+    branches: [main, "bench/*"]
 
 env:
   CARGO_TERM_COLOR: always
@@ -11,7 +11,6 @@ env:
 
 jobs:
   bench_vs_node_nft:
-    # for edited events it should only run on base changes
     runs-on: ubuntu-latest
     name: bench
 

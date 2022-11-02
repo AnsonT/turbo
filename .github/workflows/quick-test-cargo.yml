@@ -2,7 +2,7 @@ name: Quick Test
 
 on:
   push:
-    branches: [main, staging]
+    branches: [main]
   pull_request:
     branches-ignore: [main]
     paths:

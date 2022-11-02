@@ -2,7 +2,7 @@ name: Benchmark Turbopack
 
 on:
   push:
-    branches: [main, staging]
+    branches: [main, "bench/*"]
 
 env:
   CARGO_TERM_COLOR: always
@@ -71,7 +71,7 @@ jobs:
             TURBOPACK_BENCH_COUNTS: 100,500,1000
             TURBOPACK_BENCH_BUNDLERS: all
 
-    runs-on: ubuntu-latest-16-core
+    runs-on: ubuntu-latest
     name: bench - ${{ matrix.bench.name }}
 
     steps:
@@ -88,7 +88,7 @@ jobs:
 
       - name: Run cargo bench
         uses: actions-rs/cargo@v1
-        timeout-minutes: 90
+        timeout-minutes: 120
         env:
           TURBOPACK_BENCH_BUNDLERS: ${{ matrix.bench.TURBOPACK_BENCH_BUNDLERS }}
           TURBOPACK_BENCH_COUNTS: ${{ matrix.bench.TURBOPACK_BENCH_COUNTS }}
@@ -125,7 +125,7 @@ jobs:
   commit_results:
     name: Commit benchmark-data
     needs: bench
-    if: always()
+    if: always() && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Get current date
@@ -142,7 +142,7 @@ jobs:
       - name: Download benchmark data
         uses: actions/download-artifact@v3
         with:
-          path: data/${{ steps.date.outputs.year }}/${{ steps.date.outputs.month }}/ubuntu-latest-16-core/${{ steps.date.outputs.date }}-${{ github.sha }}
+          path: data/${{ steps.date.outputs.year }}/${{ steps.date.outputs.month }}/ubuntu-latest/${{ steps.date.outputs.date }}-${{ github.sha }}
       - name: Git pull
         run: git pull --depth=1 --no-tags origin benchmark-data
       - name: Push data to branch
